@@ -1,0 +1,16 @@
+langgraph==1.2.11
+langchain-google-genai==4.4.0
+fastapi==0.141.1
+fastmcp==4.0.3
+faiss-cpu==1.15.0
+aiosqlite==0.22.1
+streamlit==1.63.0
+sentence-transformers==6.0.1
+opencv-python==5.0.0.93
+paddleocr==3.7.0
+paddlepaddle==3.3.1
+langgraph-checkpoint-sqlite==3.1.1
+dotenv==0.9.9
+rank-bm25==0.2.2
+pymupdf==1.28.2
+langchain-text-splitters==1.1.2

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Agent Chat</title>
+
+    <style>
+
+        body {
+            font-family: Arial;
+            max-width: 800px;
+            margin: 50px auto;
+        }
+
+        #messages {
+            border: 1px solid #ccc;
+            padding: 20px;
+            height: 400px;
+            overflow-y: auto;
+        }
+
+        .message {
+            padding: 10px;
+            margin: 5px;
+            background: #f2f2f2;
+        }
+
+        input {
+            width: 70%;
+            padding: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <h1>Agent</h1>
+
+    <div id="messages"></div>
+
+    <br>
+
+    <input id="input" placeholder="Enter message">
+
+    <button onclick="sendMessage()">
+        Send
+    </button>
+
+
+    <script>
+
+        const socket = new WebSocket(
+            "ws://localhost:8000/ws"
+        );
+
+        
+
+        // Server → Browser
+        socket.onmessage = function(event) {
+
+            const messages =
+                document.getElementById("messages");
+
+            const data = JSON.parse(event.data);
+
+            const div =
+                document.createElement("div");
+
+            div.className = "message";
+
+            const typeEl = document.createElement("div");
+            typeEl.textContent = "Type: " + data.type;
+            div.appendChild(typeEl);
+
+            const messageEl = document.createElement("div");
+            messageEl.textContent = data.message;
+            div.appendChild(messageEl);
+
+            if (data.images && data.images.length > 0) {
+                data.images.forEach(function(imgBase64) {
+                    const img = document.createElement("img");
+                    img.src = "data:image/png;base64," + imgBase64;
+                    div.appendChild(img);
+                });
+            }
+
+            messages.appendChild(div);
+        };
+
+
+        // Browser → Server
+        function sendMessage() {
+
+            const input =
+                document.getElementById("input");
+
+            const data = {
+    type: "Validation",
+    message: input.value,
+};
+
+            socket.send(JSON.stringify(data));
+
+            input.value = "";
+
+            document.getElementById("messages").innerHTML = "";
+        };
+
+
+        socket.onopen = function() {
+            socket.send(JSON.stringify({type:"iniatiate_cc",message:"This is for initiation"}))
+            console.log("WebSocket connected");
+        };
+
+
+        socket.onclose = function() {
+            console.log("WebSocket disconnected");
+        };
+
+    </script>
+
+</body>
+
+</html>
